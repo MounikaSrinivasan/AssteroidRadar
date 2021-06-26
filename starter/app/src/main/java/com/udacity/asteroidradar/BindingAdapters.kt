@@ -1,8 +1,11 @@
 package com.udacity.asteroidradar
 
+import android.net.Uri
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
+import com.squareup.picasso.Picasso
 
 @BindingAdapter("statusIcon")
 fun bindAsteroidStatusImage(imageView: ImageView, isHazardous: Boolean) {
@@ -38,4 +41,17 @@ fun bindTextViewToKmUnit(textView: TextView, number: Double) {
 fun bindTextViewToDisplayVelocity(textView: TextView, number: Double) {
     val context = textView.context
     textView.text = String.format(context.getString(R.string.km_s_unit_format), number)
+}
+
+@BindingAdapter("imageUrl")
+fun bindImage(imgView: ImageView, pictureOfDay: PictureOfDay?) {
+    var imgUri: Uri? = null
+    if (pictureOfDay?.mediaType == "image") {
+        imgUri = pictureOfDay.url.toUri().buildUpon().scheme("https").build()
+    }
+    Picasso.with(imgView.context)
+        .load(imgUri).fit().centerCrop()
+        .placeholder(R.drawable.placeholder_picture_of_day)
+        .into(imgView)
+
 }
